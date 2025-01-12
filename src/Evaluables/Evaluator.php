@@ -72,13 +72,13 @@ class Evaluator
             return false;
         }
 
-        $condition = $this->getEvaluable();
+        $evaluable = $this->getEvaluable();
 
         echo '<pre style="display: block; max-width: 500px;">';
-        echo strval($condition);
+        echo strval($evaluable);
         echo "</pre>";
 
-        return $condition->evaluate();
+        return $evaluable->evaluate();
     }
 
     /**
