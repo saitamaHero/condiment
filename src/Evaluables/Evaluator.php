@@ -127,9 +127,6 @@ class Evaluator
 
     public function addEvaluable(Evaluable $evaluable, string $connector = 'and')
     {
-        // echo '<pre>';
-        // var_dump('add ', $evaluable, $connector);
-        // echo '</pre>';
 
         if (count($this->evaluables) > 0) {
 
@@ -138,8 +135,6 @@ class Evaluator
 
         $this->evaluables[] = $evaluable;
     }
-
-    // public function addEvaluable()
 
     public function addEvaluablesFromArray(array $evaluables)
     {
@@ -159,8 +154,6 @@ class Evaluator
     public function __call($name, $arguments)
     {
         $conditionName = str_replace(["or", "not"], "", mb_strtolower($name));
-
-        // var_dump(key_exists($conditionName, $this->conditionDefinitions));
 
         if (
             ! method_exists($this, $conditionName) &&
@@ -209,9 +202,6 @@ class Evaluator
         if (! ($evaluable instanceof Evaluable)) {
             $evaluable = $evaluator->getEvaluable();
         }
-
-
-        // echo 'Adding Evaluable connector:' . $connector;
 
         $this->addEvaluable($evaluable, $connector);
 
