@@ -1,0 +1,58 @@
+[
+    {
+        "type": "condition",
+        "condition": "equals",
+        "arguments": [
+            "123",
+            "hola"
+        ],
+        "negate": false,
+        "connector": "and"
+    },
+    {
+        "type": "condition",
+        "condition": "match",
+        "arguments": [
+            "Hola",
+            "la$"
+        ],
+        "negate": false,
+        "connector": "or"
+    },
+    {
+        "type": "condition",
+        "condition": "startswith",
+        "arguments": [
+            "Dionicio",
+            "{"
+        ],
+        "negate": false,
+        "connector": "and"
+    },
+    {
+        "type": "group",
+        "connector":"or",
+        "conditions": [
+            {
+                "type": "condition",
+                "condition": "match",
+                "arguments": [
+                    "Hola",
+                    "la$"
+                ],
+                "negate": false,
+                "connector": "or"
+            },
+            {
+                "type": "condition",
+                "condition": "startswith",
+                "arguments": [
+                    "Dionicio",
+                    "Di"
+                ],
+                "negate": false,
+                "connector": "and"
+            }
+        ]
+    }
+]
