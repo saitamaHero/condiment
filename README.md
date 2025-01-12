@@ -1,2 +1,2 @@
-# Conditment
-> Conditional Statment (Condiment)
+# Condiment
+> Conditional Statement (Condiment)
