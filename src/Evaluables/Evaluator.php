@@ -139,15 +139,26 @@ class Evaluator
     public function addEvaluablesFromArray(array $evaluables)
     {
         foreach ($evaluables as $evaluable) {
-            $name = $evaluable["condition"];
 
-            $condition = $this->initDefinition(
-                $this->conditionDefinitions[$name],
-                $evaluable["arguments"],
-                boolval($evaluable["negate"])
-            );
+            if (isset($evaluable['type']) && $evaluable['type'] === 'group') {
+                $conditions = $evaluable['conditions'] ?? [];
 
-            $this->addEvaluable($condition, $evaluable["logicalOperator"] ?? "and");
+                $this->_group(
+                    fn ($evaluator) => $evaluator->addEvaluablesFromArray($conditions),
+                    $evaluable['connector'] ?? 'and'
+                );
+            }else {
+
+                $name = $evaluable["condition"];
+    
+                $condition = $this->initDefinition(
+                    $this->conditionDefinitions[$name],
+                    $evaluable["arguments"],
+                    boolval($evaluable["negate"])
+                );
+            }
+
+            $this->addEvaluable($condition, $evaluable["connector"] ?? "and");
         }
     }
 
