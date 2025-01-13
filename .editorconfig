@@ -1,0 +1,32 @@
+# EditorConfig helps developers define and maintain consistent coding styles
+# for multiple developers working on the same project across various editors and IDEs.
+root = true
+
+# Matches all files
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+indent_style = space
+indent_size = 4
+
+# Match PHP files
+[*.php]
+indent_style = space
+indent_size = 4
+max_line_length = 120
+
+# Match JSON files
+[*.json]
+indent_style = space
+indent_size = 2
+
+# Match Markdown files
+[*.md]
+trim_trailing_whitespace = false
+
+# Match YAML files
+[*.yml]
+indent_style = space
+indent_size = 2
