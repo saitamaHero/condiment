@@ -57,7 +57,7 @@ class Evaluator
             return array_shift($stack);
         }
 
-        return in_array('or', $connectors) ? Disjunction::create(...$stack) : Conjunction::create(...$stack);
+        return in_array('or', $connectors) ? new Disjunction(...$stack) : new Conjunction(...$stack);
     }
 
     public function getEvaluable()
