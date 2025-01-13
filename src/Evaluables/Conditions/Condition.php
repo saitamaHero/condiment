@@ -5,9 +5,19 @@ namespace Condiment\Evaluables\Conditions;
 use Condiment\Evaluables\Evaluable;
 use Condiment\Evaluables\Negable;
 use Condiment\Evaluables\Operators\Negation;
+use Condiment\Exceptions\NoArgumentsException;
 
 abstract class Condition implements Evaluable, Negable
 {
+    protected $arguments = [];
+
+    public function args(array $arguments)
+    {
+        $this->arguments = $arguments;
+
+        return $this;
+    }
+
     /**
      * @return bool
     */
@@ -20,6 +30,10 @@ abstract class Condition implements Evaluable, Negable
 
     public function evaluate(): bool
     {
+        if (empty($this->arguments)) {
+            throw new NoArgumentsException();
+        }
+
         return $this->execute();
     }
 }

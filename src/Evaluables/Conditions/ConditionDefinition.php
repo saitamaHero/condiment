@@ -9,8 +9,6 @@ use Condiment\Evaluables\Operators\Negation;
  */
 abstract class ConditionDefinition extends Condition
 {
-    protected $arguments = [];
-
     protected $options = [];
 
     /**
@@ -18,12 +16,6 @@ abstract class ConditionDefinition extends Condition
      */
     protected $logicalOperator = null;
 
-    public function args(array $arguments)
-    {
-        $this->arguments = $arguments;
-
-        return $this;
-    }
 
     /**
      * @return Negation
