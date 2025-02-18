@@ -1,1 +1,44 @@
+# Ignore system files
+.DS_Store
+Thumbs.db
+
+# Ignore IDE/editor files
+*.sublime-project
+*.sublime-workspace
+*.vscode/
+*.idea/
+*.phpstorm.meta.php
+
+# Ignore environment files
+.env
+.env.*
+
+# Ignore PHPUnit and coverage reports
+phpunit.xml
+phpunit.xml.dist
+coverage.xml
+/build/
+/clover.xml
+/.phpunit.result.cache
+
+# Ignore logs and caches
+logs/
+*.log
+*.cache
+
+# Ignore deployment files
+.env.local
+.env.development.local
+.env.production.local
+
+# Ignore database files
+Homestead.yaml
+Homestead.json
+/.vagrant/
+
+# Ignore vendor directory
 /vendor/
+
+# Ignore lock files
+npm-debug.log*
+yarn-error.log*
