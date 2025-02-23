@@ -1,18 +1,35 @@
 <?php
 
+use Condiment\Evaluables\Conditions\Definitions\EndsWith;
 use Condiment\Evaluables\Conditions\Definitions\Equals;
+use Condiment\Evaluables\Conditions\Definitions\StartsWith;
 use PHPUnit\Framework\TestCase;
 
 final class ConditionTest extends TestCase
 {
- 
-    public function test_condition_can_be_evaluated()
-    {
-        $condition = new Equals();
 
-        $result = $condition->args([1, 1])->evaluate();
+    public static function conditionProvider()
+    {
+        return [
+            'Equals: identical strings' => [Equals::class, ["condiment", "condiment"], true],
+            'Equals: different strings' => [Equals::class, ["condiment", "spice"], false],
+            'Equals: floating point issue' => [Equals::class, [0.1 + 0.2, 0.3], false],
+            'StartsWith: valid prefix' => [StartsWith::class, ["condiment", "con"], true],
+            'EndsWith: incorrect suffix' => [EndsWith::class, ["condiment", "con"], false],
+        ];
+    }
+
+    /**
+     * @dataProvider conditionProvider
+     */
+    public function test_condition_evaluates_to_boolean($conditionClass, array $args, bool $expected)
+    {
+        $condition = new $conditionClass;
+
+        $result = $condition->args($args)->evaluate();
 
         $this->assertIsBool($result);
+        $this->assertSame($expected, $result);
     }
 
 
@@ -20,10 +37,11 @@ final class ConditionTest extends TestCase
     {
         $this->expectException(Condiment\Exceptions\NoArgumentsException::class);
 
-        (new Equals())->evaluate();
+        $condition = new Equals();
+        $condition->evaluate();
     }
 
-    public function test_condition_returns_expected_result() 
+    public function test_condition_returns_expected_result()
     {
         $this->assertTrue((new Equals())->args([1, 1])->evaluate());
         $this->assertFalse((new Equals())->args([1, 2])->evaluate());
@@ -34,23 +52,33 @@ final class ConditionTest extends TestCase
         $negation = (new Equals())->args([1, 2])->negate();
 
         $this->assertInstanceOf(\Condiment\Evaluables\Operators\Negation::class, $negation);
+
+        $this->assertTrue($negation->evaluate());
     }
 
-    public function test_negation_returns_the_opposite_result()
+    /**
+     * @dataProvider negationProvider
+     * @return void
+     */
+    public function test_negation_returns_the_opposite_result($conditionClass, $args, $expected)
     {
-        $condition = new Equals();
-        $condition->args(["condiment", "condiment"]);
+        $condition = new $conditionClass;
 
-        $this->assertEquals(true, $condition->evaluate());
-        $this->assertEquals(false, $condition->negate()->evaluate());
+        $negation = $condition->args($args)->negate();
 
-        $condition = new Equals();
-        $condition->args(["Hello World", "condiment"]);
+        $this->assertInstanceOf(\Condiment\Evaluables\Operators\Negation::class, $negation);
+        $this->assertNotSame($condition->evaluate(), $negation->evaluate(),  "Negation did not invert result correctly");
+        $this->assertSame($expected, $negation->evaluate(), "Expected negated result mismatch");
+    }
 
-        $this->assertEquals(false, $condition->evaluate());
-        $this->assertEquals(true, $condition->negate()->evaluate());
-
-        
+    public static function negationProvider()
+    {
+        return [
+            'Equals: identical strings' => [Equals::class, ["condiment", "condiment"], false],
+            'Equals: different strings' => [Equals::class, ["condiment", "HelloWorld"], true],
+            'StartsWith: valid suffix' => [StartsWith::class, ["condiment", "con"], false],
+            'EndsWith: invalid prefix' => [EndsWith::class, ["condiment", "con"], true],
+        ];
     }
 
 }
