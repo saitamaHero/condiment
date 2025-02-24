@@ -10,10 +10,6 @@ class StartsWith extends ConditionDefinition
     {
         list($a, $b) = $this->arguments;
 
-        $b = sanitize_regex($b);
-
-        // echo "regex: " . $b;
-
         return preg_match("/^$b/", $a) > 0;
     }
 }
