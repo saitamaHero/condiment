@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace Condiment\Evaluables\Conditions;
 
@@ -27,7 +27,7 @@ abstract class ConditionDefinition extends Condition
 
     public static function getRegisterName()
     {
-        return \mb_strtolower(\basename(\str_replace("\\", "/", static::class)));
+        return \lcfirst(\basename(\str_replace("\\", "/", static::class)));
     }
 
     public function __toString()
