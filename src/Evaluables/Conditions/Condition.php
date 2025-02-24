@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace Condiment\Evaluables\Conditions;
 
@@ -31,7 +31,7 @@ abstract class Condition implements Evaluable, Negable
     public function evaluate(): bool
     {
         if (empty($this->arguments)) {
-            throw new NoArgumentsException();
+            throw new NoArgumentsException(static::class);
         }
 
         return $this->execute();

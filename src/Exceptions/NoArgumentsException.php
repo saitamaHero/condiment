@@ -4,9 +4,9 @@ namespace Condiment\Exceptions;
 
 class NoArgumentsException extends \Exception
 {
-   
-    public function __construct()
+
+    public function __construct(string $class = "")
     {
-        parent::__construct("No Arguments was provided", 101);
+        parent::__construct("No arguments provided to " . $class . " condition.", 101);
     }
 }
