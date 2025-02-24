@@ -1,13 +1,17 @@
-<?php 
+<?php
 
-namespace Condiment\Evaluables;
+namespace Condiment\Evaluables\Evaluators;
 
-use Condiment\Evaluables\Conditions\Definitions;
-use Condiment\Evaluables\Operators\Conjunction;
-use Condiment\Evaluables\Operators\Disjunction;
+use Condiment\Evaluables\{Evaluable, Operators};
 
 class Evaluator
 {
+    const AND_CONNECTOR = 'and';
+
+    const OR_CONNECTOR = 'or';
+
+    const NOT_CONNECTOR = 'not';
+
     /**
      * @var array<int,Evaluable>
      */
@@ -16,17 +20,28 @@ class Evaluator
     /**
      * @var array
      */
-    protected array $conditionDefinitions = [
-        'equals' => Definitions\Equals::class,
-        'startswith' => Definitions\StartsWith::class,
-        'endswith' => Definitions\EndsWith::class,
-        'match' => Definitions\MatchPattern::class,
-    ];
+    protected array $conditionDefinitions = [];
+
+    /**
+     * Undocumented variable
+     *
+     * @var array<int,
+     */
+    protected $conditionProviders = [];
 
     /**
      * @var array<int, 'and' | 'or'>
      */
     protected $connectors = [];
+
+    public function __construct(array $conditionProviders = [])
+    {
+        if (empty($conditionProviders)) {
+            $this->conditionProviders[] = new \Condiment\Evaluables\Conditions\Providers\DefaultConditionProvider();
+        }
+
+        $this->defineConditions();
+    }
 
     public function groupConditions(array $evaluables, array $connectors): Evaluable //TODO: rename it to groupEvaluables
     {
@@ -35,15 +50,15 @@ class Evaluator
         $current = $evaluables[0];
 
         for ($i = 0; $i < count($connectors); $i++) {
-            $connector = $connectors[$i];
+            $connector = strtolower($connectors[$i]);
 
-            if ($connector === 'and') {
+            if ($connector === self::AND_CONNECTOR) {
                 if (key_exists($i + 1, $evaluables)) {
-                    $current = Conjunction::create($current, $evaluables[$i + 1]);
+                    $current = Operators\Conjunction::create($current, $evaluables[$i + 1]);
                 } else {
                     $stack[] = $current;
                 }
-            } else if ($connector === 'or') {
+            } else if ($connector === self::OR_CONNECTOR) {
                 $stack[] = $current;
                 $current = $evaluables[$i + 1];
             } else {
@@ -57,7 +72,7 @@ class Evaluator
             return array_shift($stack);
         }
 
-        return in_array('or', $connectors) ? new Disjunction(...$stack) : new Conjunction(...$stack);
+        return in_array(self::OR_CONNECTOR, $connectors) ? new Operators\Disjunction(...$stack) : new Operators\Conjunction(...$stack);
     }
 
     public function getEvaluable()
@@ -83,7 +98,7 @@ class Evaluator
 
     /**
      * @param string $conditionDefinitionClass
-     * 
+     *
      * @return void
      */
     public function defineFromClass(string $conditionDefinitionClass)
@@ -97,7 +112,7 @@ class Evaluator
     /**
      * @param string $name
      * @param class-string $condition
-     * 
+     *
      * @return void
      */
     public function defineCondition(string $name, string $definition)
@@ -108,7 +123,7 @@ class Evaluator
     /**
      * @param string $conditionDefinitionClass
      * @param array $args
-     * @param bool $negate 
+     * @param bool $negate
      * @return Evaluable
      * @throws \Exception
      */
@@ -144,64 +159,56 @@ class Evaluator
                 $conditions = $evaluable['conditions'] ?? [];
 
                 $this->_group(
-                    fn ($evaluator) => $evaluator->addEvaluablesFromArray($conditions),
-                    $evaluable['connector'] ?? 'and'
+                    fn($evaluator) => $evaluator->addEvaluablesFromArray($conditions),
+                    $evaluable['connector'] ?? self::AND_CONNECTOR
                 );
-            }else {
+            } else {
 
-                $name = $evaluable["condition"];
-    
-                $condition = $this->initDefinition(
-                    $this->conditionDefinitions[$name],
+                $this->addCondition(
+                    $evaluable["condition"],
                     $evaluable["arguments"],
+                    $evaluable["connector"] ?? self::AND_CONNECTOR,
                     boolval($evaluable["negate"])
                 );
             }
-
-            $this->addEvaluable($condition, $evaluable["connector"] ?? "and");
         }
     }
 
-    public function __call($name, $arguments)
+    public function addCondition(string $condition, array $args, $connector = self::AND_CONNECTOR, bool $negate = false)
     {
-        $conditionName = str_replace(["or", "not"], "", mb_strtolower($name));
+        // echo '<pre>';
+        // var_dump($this->getDefinedConditions());
+        // echo '</pre>';
+        // die();
+        $condition = $this->initDefinition(
+            $this->conditionDefinitions[$condition],
+            $args,
+            $negate
+        );
 
-        if (
-            ! method_exists($this, $conditionName) &&
-            key_exists($conditionName, $this->conditionDefinitions)
-        ) {
-            $condition = $this->initDefinition(
-                $this->conditionDefinitions[$conditionName],
-                $arguments,
-                stripos($name, "not") !== false
-            );
+        $this->addEvaluable($condition, $connector);
 
-            $this->addEvaluable($condition, strpos($name, "or") !== 0 ? "and" : "or");
-
-            return $this;
-        } else {
-            throw new \Exception("Illegal Method \"$name\" on " . static::class);
-        }
+        return $this;
     }
 
     /**
      * @param callable $closure
-     * 
-     * @return Evaluable
+     *
+     * @return $this
      */
-    public function group(\Closure $closure)
+    public function group(\Closure $closure) //TODO maybe this can be part of fluent evaluator
     {
-        return $this->_group($closure, 'and');
+        return $this->_group($closure, self::AND_CONNECTOR);
     }
 
     /**
      * @param callable $closure
-     * 
-     * @return Evaluable
+     *
+     * @return $this
      */
-    public function orGroup(\Closure $closure)
+    public function orGroup(\Closure $closure) //TODO maybe this can be part of fluent evaluator
     {
-        return $this->_group($closure, 'or');
+        return $this->_group($closure, self::OR_CONNECTOR);
     }
 
     protected function _group(\Closure $closure, string $connector)
@@ -223,5 +230,25 @@ class Evaluator
     {
         $this->evaluables = [];
         $this->connectors = [];
+    }
+
+    public function getDefinedConditions()
+    {
+        return $this->conditionDefinitions;
+    }
+
+    protected function defineConditions()
+    {
+        $conditions = array_reduce(
+            $this->conditionProviders,
+            function ($conditions, \Condiment\Evaluables\Conditions\Providers\ConditionProvider $conditionProvider) {
+                return array_merge($conditions, $conditionProvider->getDefinedConditions());
+            },
+            []
+        );
+
+        foreach ($conditions as $condition) {
+            $this->defineFromClass($condition);
+        }
     }
 }
