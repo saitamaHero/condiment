@@ -10,7 +10,7 @@ class MatchPattern extends ConditionDefinition
 
     public static function getRegisterName()
     {
-        return 'regex';
+        return 'match';
     }
 
     protected function execute(): bool
