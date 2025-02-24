@@ -21,7 +21,7 @@
     },
     {
         "type": "condition",
-        "condition": "startswith",
+        "condition": "startsWith",
         "arguments": [
             "Dionicio",
             "{"
@@ -45,7 +45,7 @@
             },
             {
                 "type": "condition",
-                "condition": "startswith",
+                "condition": "startsWith",
                 "arguments": [
                     "Dionicio",
                     "Di"
