@@ -22,7 +22,7 @@ final class ConditionTest extends TestCase
     /**
      * @dataProvider conditionProvider
      */
-    public function test_condition_evaluates_to_boolean($conditionClass, array $args, bool $expected)
+    public function testConditionEvaluatesToBoolean($conditionClass, array $args, bool $expected)
     {
         $condition = new $conditionClass;
 
@@ -33,7 +33,7 @@ final class ConditionTest extends TestCase
     }
 
 
-    public function test_condition_cannot_be_evaluated_without_arguments()
+    public function testConditionCannotBeEvaluatedWithoutArguments()
     {
         $this->expectException(Condiment\Exceptions\NoArgumentsException::class);
 
@@ -41,13 +41,13 @@ final class ConditionTest extends TestCase
         $condition->evaluate();
     }
 
-    public function test_condition_returns_expected_result()
+    public function testConditionReturnsExpectedResult()
     {
         $this->assertTrue((new Equals())->args([1, 1])->evaluate());
         $this->assertFalse((new Equals())->args([1, 2])->evaluate());
     }
 
-    public function test_condition_can_be_negated()
+    public function testConditionCanBeNegated()
     {
         $negation = (new Equals())->args([1, 2])->negate();
 
@@ -60,7 +60,7 @@ final class ConditionTest extends TestCase
      * @dataProvider negationProvider
      * @return void
      */
-    public function test_negation_returns_the_opposite_result($conditionClass, $args, $expected)
+    public function testNegationReturnsTheOppositeResult($conditionClass, $args, $expected)
     {
         $condition = new $conditionClass;
 
