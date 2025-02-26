@@ -13,7 +13,7 @@ final class ConditionTest extends TestCase
         return [
             'Equals: identical strings' => [Equals::class, ["condiment", "condiment"], true],
             'Equals: different strings' => [Equals::class, ["condiment", "spice"], false],
-            'Equals: floating point issue' => [Equals::class, [0.1 + 0.2, 0.3], false],
+            'Equals: floating point issue' => [Equals::class, [0.1 + 0.2, 0.3], true],
             'StartsWith: valid prefix' => [StartsWith::class, ["condiment", "con"], true],
             'EndsWith: incorrect suffix' => [EndsWith::class, ["condiment", "con"], false],
         ];
@@ -76,6 +76,7 @@ final class ConditionTest extends TestCase
         return [
             'Equals: identical strings' => [Equals::class, ["condiment", "condiment"], false],
             'Equals: different strings' => [Equals::class, ["condiment", "HelloWorld"], true],
+            'Equals: floating point issue' => [Equals::class, [0.1 + 0.2, 0.3], false],
             'StartsWith: valid suffix' => [StartsWith::class, ["condiment", "con"], false],
             'EndsWith: invalid prefix' => [EndsWith::class, ["condiment", "con"], true],
         ];
