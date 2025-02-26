@@ -6,25 +6,23 @@ use Condiment\Evaluables\Conditions\ConditionDefinition;
 
 class Equals extends ConditionDefinition
 {
+    protected $stringCompareFunction = 'strcasecmp';
+
     protected function execute(): bool
     {
         list($a, $b) = $this->arguments;
 
-        // $a = 270.10 + 20.10; $b = 290.20;
+        if (is_numeric($a) && is_numeric($b))
+        {
+            return $this->numberEquals((float)$a, (float)$b);
+        }
 
-        // $a1 = sprintf("%.15f", $a);
-        // $b1 = sprintf("%.15f", $b);
+        return call_user_func_array($this->stringCompareFunction, [$a, $b]) === 0;
+    }
 
-        // var_dump(is_float($a), compact('a1', 'b1'),abs(((float)$a-$b)/$b) < PHP_FLOAT_EPSILON, abs((($a-$b)) < PHP_FLOAT_EPSILON));
-        // echo "$a === $b\n";
 
-        // if (is_float($a) || is_float($b)) {
-        //     $a = floatval($a);
-        //     $b = floatval($b);
-
-        //     return abs(($a-$b)/$b) < PHP_FLOAT_EPSILON;
-        // }
-
-        return $a === $b;
+    public function numberEquals(float $a, float $b, $epsilon = 0.00001)
+    {
+        return abs($a - $b) < $epsilon;
     }
 }
