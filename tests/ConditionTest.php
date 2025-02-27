@@ -14,6 +14,8 @@ final class ConditionTest extends TestCase
             'Equals: identical strings' => [Equals::class, ["condiment", "condiment"], true],
             'Equals: different strings' => [Equals::class, ["condiment", "spice"], false],
             'Equals: floating point issue' => [Equals::class, [0.1 + 0.2, 0.3], true],
+            'Equals: date and times' => [Equals::class, [new \DateTime("2025-02-16"), new \DateTime("2025-02-16")], true],
+            'Equals: date and times - time diff' => [Equals::class, [new \DateTime("2025-02-16"), new \DateTime("2025-02-16 00:01:00")], false],
             'StartsWith: valid prefix' => [StartsWith::class, ["condiment", "con"], true],
             'EndsWith: incorrect suffix' => [EndsWith::class, ["condiment", "con"], false],
         ];
