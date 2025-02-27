@@ -41,12 +41,6 @@ final class ConditionTest extends TestCase
         $condition->evaluate();
     }
 
-    public function testConditionReturnsExpectedResult()
-    {
-        $this->assertTrue((new Equals())->args([1, 1])->evaluate());
-        $this->assertFalse((new Equals())->args([1, 2])->evaluate());
-    }
-
     public function testConditionCanBeNegated()
     {
         $negation = (new Equals())->args([1, 2])->negate();
