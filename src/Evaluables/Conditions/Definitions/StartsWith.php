@@ -2,14 +2,18 @@
 
 namespace Condiment\Evaluables\Conditions\Definitions;
 
-use Condiment\Evaluables\Conditions\ConditionDefinition;
+use Condiment\Evaluables\Conditions;
 
-class StartsWith extends ConditionDefinition
+class StartsWith extends Conditions\ConditionDefinition
 {
+    use Conditions\Regexable;
+
     protected function execute(): bool
     {
-        list($a, $b) = $this->arguments;
+        list($subject, $regex) = $this->arguments;
 
-        return preg_match("/^$b/", $a) > 0;
+        $regex = $this->sanitizeRegex($regex);
+
+        return $this->matchInput($subject, "^$regex") > 0;
     }
 }
