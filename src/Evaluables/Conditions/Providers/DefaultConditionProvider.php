@@ -11,6 +11,7 @@ final class DefaultConditionProvider extends ConditionProvider
         Definitions\MatchPattern::class,
         Definitions\StartsWith::class,
         Definitions\EndsWith::class,
+        Definitions\Contains::class,
     ];
 
 
