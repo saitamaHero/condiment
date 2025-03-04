@@ -26,4 +26,9 @@ class FluentEvaluator extends Evaluator
 
         return $this;
     }
+
+    protected function getConditionNameFromCall(string $methodName): string
+    {
+        return str_ireplace([self::OR_CONNECTOR, self::NOT_CONNECTOR], "", lcfirst($methodName));
+    }
 }
