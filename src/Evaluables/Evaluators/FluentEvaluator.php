@@ -29,6 +29,6 @@ class FluentEvaluator extends Evaluator
 
     protected function getConditionNameFromCall(string $methodName): string
     {
-        return str_ireplace([self::OR_CONNECTOR, self::NOT_CONNECTOR], "", lcfirst($methodName));
+        return \lcfirst(\str_ireplace([self::OR_CONNECTOR, self::NOT_CONNECTOR], "", $methodName));
     }
 }
