@@ -3,8 +3,8 @@
 namespace Condiment\Evaluables\Evaluators;
 
 /**
- * Fluent Evaluator can handle the add evaluables from
- * a more natural programming way.
+ * Fluent Evaluator provides a fluent API to
+ * chain calls in more "fluent" way
  *
  */
 class FluentEvaluator extends Evaluator
