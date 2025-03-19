@@ -247,8 +247,14 @@ class Evaluator
             []
         );
 
-        foreach ($conditions as $condition) {
-            $this->defineFromClass($condition);
+        foreach ($conditions as $key => $condition) {
+
+            # string keys might indicate that is the name/alias of the condition
+            if (is_string($key)) {
+                $this->defineCondition($key, $condition);
+            }else {
+                $this->defineFromClass($condition);
+            }
         }
     }
 }
