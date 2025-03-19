@@ -1,20 +1,27 @@
 {
-    "name": "phpsandbox/standard",
-    "description": "Official scaffold for Standard notebooks on PHPSandbox",
-    "type": "project",
+    "name": "saitamahero/condiment",
+    "description": "A PHP library for evaluating conditional statements",
+    "keywords": ["php", "conditions", "evaluator", "workflow", "logic"],
+    "type": "library",
     "license": "MIT",
     "authors": [
         {
-            "name": "Olatunbosun Egberinde",
-            "email": "bosunski@gmail.com"
+            "name": "Dionicio Acevedo",
+            "email": "tec.dionicioacevedo@gmail.com"
         }
     ],
+    "require": {
+      "php": ">=8.0"
+    },
     "autoload": {
         "psr-4": {
             "Condiment\\": "src/"
         }
     },
-    "minimum-stability": "dev",
+    "scripts": {
+      "test": "vendor/bin/phpunit"
+    },
+    "minimum-stability": "stable",
     "prefer-stable": true,
     "require-dev": {
         "phpunit/phpunit": "^9.6"
