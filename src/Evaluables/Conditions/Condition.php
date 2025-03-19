@@ -36,4 +36,23 @@ abstract class Condition implements Evaluable, Negable
 
         return $this->execute();
     }
+
+    public function getArguments()
+    {
+        return $this->arguments;
+    }
+
+    /**
+     * @param int $index
+     *
+     * @return mixed
+     */
+    public function getArgument(int $index)
+    {
+        if ($index > count($this->arguments) || $index < 0) {
+            throw new \OutOfRangeException("$index is not a valid argument index");
+        }
+
+        return $this->arguments[$index];
+    }
 }
