@@ -180,10 +180,10 @@ class Evaluator
 
     public function addCondition(string $condition, array $args, $connector = self::AND_CONNECTOR, bool $negate = false)
     {
-        // echo '<pre>';
-        // var_dump($this->getDefinedConditions());
-        // echo '</pre>';
-        // die();
+        if (!$this->conditionExists($condition)) {
+            throw new EvaluatorInvalidConditionException($condition);
+        }
+
         $condition = $this->initDefinition(
             $this->conditionDefinitions[$condition],
             $args,
