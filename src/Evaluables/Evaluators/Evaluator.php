@@ -148,29 +148,6 @@ class Evaluator
         $this->evaluables[] = $evaluable;
     }
 
-    public function addEvaluablesFromArray(array $evaluables)
-    {
-        foreach ($evaluables as $evaluable) {
-
-            if (isset($evaluable['type']) && $evaluable['type'] === 'group') {
-                $conditions = $evaluable['conditions'] ?? [];
-
-                $this->_group(
-                    fn($evaluator) => $evaluator->addEvaluablesFromArray($conditions),
-                    $evaluable['connector'] ?? self::AND_CONNECTOR
-                );
-            } else {
-
-                $this->addCondition(
-                    $evaluable["condition"],
-                    $evaluable["arguments"],
-                    $evaluable["connector"] ?? self::AND_CONNECTOR,
-                    boolval($evaluable["negate"])
-                );
-            }
-        }
-    }
-
     public function addCondition(string $condition, array $args, $connector = self::AND_CONNECTOR, bool $negate = false)
     {
         if (!$this->conditionExists($condition)) {
