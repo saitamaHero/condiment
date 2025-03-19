@@ -80,7 +80,7 @@ class Evaluator
         return $this->groupConditions($this->evaluables, $this->connectors);
     }
 
-    public function evaluate(): bool
+    public function evaluate(bool $reset = true): bool
     {
 
         if (count($this->evaluables) < 1) {
@@ -92,6 +92,10 @@ class Evaluator
         echo '<pre style="display: block; max-width: 500px;">';
         echo strval($evaluable);
         echo "</pre>";
+
+        if ($reset) {
+            $this->reset();
+        }
 
         return $evaluable->evaluate();
     }
@@ -226,10 +230,20 @@ class Evaluator
         return $this;
     }
 
-    public function __clone()
+    public function reset()
     {
         $this->evaluables = [];
         $this->connectors = [];
+    }
+
+    public function conditionExists(string $conditionName)
+    {
+        return key_exists($conditionName, $this->conditionDefinitions);
+    }
+
+    public function __clone()
+    {
+        $this->reset();
     }
 
     public function getDefinedConditions()
