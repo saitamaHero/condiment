@@ -3,6 +3,8 @@
 namespace Condiment\Evaluables\Evaluators;
 
 use Condiment\Evaluables\{Evaluable, Operators};
+use Condiment\Evaluables\Operators\Negation;
+use Condiment\Exceptions\EvaluatorInvalidConditionException;
 
 class Evaluator
 {
@@ -43,36 +45,27 @@ class Evaluator
         $this->defineConditions();
     }
 
-    public function groupConditions(array $evaluables, array $connectors): Evaluable //TODO: rename it to groupEvaluables
+    public function groupConditions(array $evaluables, array $connectors): Evaluable
     {
-        $stack = [];
-
-        $current = $evaluables[0];
+        $stack = [$evaluables[0]];
 
         for ($i = 0; $i < count($connectors); $i++) {
             $connector = strtolower($connectors[$i]);
 
+            if (!isset($evaluables[$i + 1])) {
+                throw new \LogicException("An evaluable is missing for the connector at position {$i}.");
+            }
+
             if ($connector === self::AND_CONNECTOR) {
-                if (key_exists($i + 1, $evaluables)) {
-                    $current = Operators\Conjunction::create($current, $evaluables[$i + 1]);
-                } else {
-                    $stack[] = $current;
-                }
-            } else if ($connector === self::OR_CONNECTOR) {
-                $stack[] = $current;
-                $current = $evaluables[$i + 1];
+                $stack[count($stack) - 1] = Operators\Conjunction::create($stack[count($stack) - 1], $evaluables[$i + 1]);
+            } elseif ($connector === self::OR_CONNECTOR) {
+                $stack[] = $evaluables[$i + 1];
             } else {
-                throw new \Exception("Illegal Connector \"{$connector}\"");
+                throw new \InvalidArgumentException("Illegal Connector: \"{$connector}\".");
             }
         }
 
-        $stack[] = $current;
-
-        if (count($stack) < 2) {
-            return array_shift($stack);
-        }
-
-        return in_array(self::OR_CONNECTOR, $connectors) ? new Operators\Disjunction(...$stack) : new Operators\Conjunction(...$stack);
+        return count($stack) > 1 ? new Operators\Disjunction(...$stack) : reset($stack);
     }
 
     public function getEvaluable()
