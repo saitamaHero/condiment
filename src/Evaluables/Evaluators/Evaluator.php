@@ -196,11 +196,11 @@ class Evaluator
     }
 
     /**
-     * @param callable $closure
+     * @param \Closure $closure
      *
      * @return $this
      */
-    public function group(\Closure $closure) //TODO maybe this can be part of fluent evaluator
+    public function group(\Closure $closure)
     {
         return $this->_group($closure, self::AND_CONNECTOR);
     }
