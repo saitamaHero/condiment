@@ -13,12 +13,6 @@ final class EvaluatorTest extends TestCase
         $this->evaluator = new Evaluator();
     }
 
-    // public function testEvaluatorCanNotBeEvaluatedWithoutConditions()
-    // {
-    //     $this->expectException(\Condiment\Exceptions\EvaluatorMissingConditionsException::class);
-    //     $this->evaluator->evaluate();
-    // }
-
     public static function conditionsProvider()
     {
         return [
