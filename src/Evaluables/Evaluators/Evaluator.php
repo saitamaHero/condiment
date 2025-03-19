@@ -215,7 +215,40 @@ class Evaluator
         return $this->_group($closure, self::OR_CONNECTOR);
     }
 
-    protected function _group(\Closure $closure, string $connector)
+    public function addGroup(array $conditions, string $connector = self::AND_CONNECTOR, $negate = false)
+    {
+        return $this->_group(function ($evaluator) use ($conditions) {
+            foreach ($conditions as $key => $condition) {
+                if (!is_array($condition[0])) {
+                    $evaluator->addCondition(...$condition);
+                }else {
+                  $evaluator->addGroup($condition, (string)$key);
+                }
+
+            }
+        }, $connector, $negate);
+    }
+
+    public function addConditions(array $conditions)
+    {
+        foreach ($conditions as $key => $condition) {
+
+            if (!is_array($condition[0])) {
+                $this->addCondition(...$condition);
+            }else {
+
+                $groupConnector = Evaluator::AND_CONNECTOR;
+
+                if (is_string($key) && in_array($key, [Evaluator::AND_CONNECTOR, Evaluator::OR_CONNECTOR])) {
+                    $groupConnector = \strtolower($key);
+                }
+
+                $this->addGroup($condition, $groupConnector);
+            }
+        }
+    }
+
+    protected function _group(\Closure $closure, string $connector, bool $negate = false)
     {
         $evaluator = clone $this;
 
@@ -223,6 +256,10 @@ class Evaluator
 
         if (! ($evaluable instanceof Evaluable)) {
             $evaluable = $evaluator->getEvaluable();
+        }
+
+        if ($negate) {
+            $evaluable = new Negation($evaluable);
         }
 
         $this->addEvaluable($evaluable, $connector);
