@@ -82,10 +82,6 @@ class Evaluator
 
         $evaluable = $this->getEvaluable();
 
-        echo '<pre style="display: block; max-width: 500px;">';
-        echo strval($evaluable);
-        echo "</pre>";
-
         if ($reset) {
             $this->reset();
         }
