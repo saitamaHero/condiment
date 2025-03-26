@@ -3,6 +3,8 @@
 namespace Condiment\Evaluables\Evaluators;
 
 use Condiment\Evaluables\{Evaluable, Operators};
+use Condiment\Evaluables\Conditions\Groups\AndThenOrGroup;
+use Condiment\Evaluables\Conditions\Groups\ConditionGroup;
 use Condiment\Evaluables\Operators\Negation;
 use Condiment\Exceptions\EvaluatorInvalidConditionException;
 
@@ -36,6 +38,13 @@ class Evaluator
      */
     protected $connectors = [];
 
+    //TODO resolve grouping manually with a callback or special class that groups evaluables
+
+    /**
+     * @var \Closure|ConditionGroup
+     */
+    protected $conditionGroup;
+
     public function __construct(array $conditionProviders = [])
     {
         if (empty($conditionProviders)) {
@@ -43,29 +52,24 @@ class Evaluator
         }
 
         $this->defineConditions();
+
+        $this->setConditionGroup(new AndThenOrGroup());
+    }
+
+    public function setConditionGroup($conditionGroup)
+    {
+        $this->conditionGroup = $conditionGroup;
+
+        return $this;
     }
 
     public function groupConditions(array $evaluables, array $connectors): Evaluable
     {
-        $stack = [$evaluables[0]];
-
-        for ($i = 0; $i < count($connectors); $i++) {
-            $connector = strtolower($connectors[$i]);
-
-            if (!isset($evaluables[$i + 1])) {
-                throw new \LogicException("An evaluable is missing for the connector at position {$i}.");
-            }
-
-            if ($connector === self::AND_CONNECTOR) {
-                $stack[count($stack) - 1] = Operators\Conjunction::create($stack[count($stack) - 1], $evaluables[$i + 1]);
-            } elseif ($connector === self::OR_CONNECTOR) {
-                $stack[] = $evaluables[$i + 1];
-            } else {
-                throw new \InvalidArgumentException("Illegal Connector: \"{$connector}\".");
-            }
+        if ($this->conditionGroup instanceof \Closure) {
+            return $this->conditionGroup->call($this, $evaluables, $connectors);
         }
 
-        return count($stack) > 1 ? new Operators\Disjunction(...$stack) : reset($stack);
+        return $this->conditionGroup->group($evaluables, $connectors);
     }
 
     public function getEvaluable()
@@ -247,6 +251,8 @@ class Evaluator
     public function __clone()
     {
         $this->reset();
+
+        $this->setConditionGroup(new AndThenOrGroup());
     }
 
     public function getDefinedConditions()
