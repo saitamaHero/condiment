@@ -8,6 +8,7 @@ use Condiment\Evaluables\Conditions\Groups\ConditionGroup;
 use Condiment\Evaluables\Operators\Negation;
 use Condiment\Exceptions\EvaluatorInvalidConditionException;
 
+//Add method to evaluate any (for any  condition that passes) and all (for all condition must pass)
 class Evaluator
 {
     const AND_CONNECTOR = 'and';
@@ -137,7 +138,7 @@ class Evaluator
         return $condition;
     }
 
-    public function addEvaluable(Evaluable $evaluable, string $connector = 'and')
+    public function addEvaluable(Evaluable $evaluable, string $connector = 'and') //TODO work on this, change AND connector
     {
 
         if (count($this->evaluables) > 0) {
@@ -172,6 +173,7 @@ class Evaluator
      */
     public function group(\Closure $closure)
     {
+        //TODO maybe this can be part of fluent evaluator add method to handle negables e.g notGroup or orNotGroup
         return $this->_group($closure, self::AND_CONNECTOR);
     }
 
