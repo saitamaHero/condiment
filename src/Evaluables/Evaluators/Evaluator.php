@@ -17,6 +17,14 @@ class Evaluator
     const NOT_CONNECTOR = 'not';
 
     /**
+     * Prefix for identify which argument should be pull
+     * from the datasource
+     *
+     * @var string
+     */
+    const ARGUMENT_RESOLVE_PREFIX_TOKEN = "@@";
+
+    /**
      * @var array<int,Evaluable>
      */
     protected array $evaluables = [];
@@ -38,6 +46,11 @@ class Evaluator
      */
     protected $connectors = [];
 
+    /**
+     * @var array
+     */
+    protected $datasource = [];
+
     //TODO resolve grouping manually with a callback or special class that groups evaluables
 
     /**
@@ -54,6 +67,13 @@ class Evaluator
         $this->defineConditions();
 
         $this->setConditionGroup(new AndThenOrGroup());
+    }
+
+    public function setDataSource(array $datasource)
+    {
+        $this->datasource = $this->flattenDataSource($datasource);
+
+        return $this;
     }
 
     public function setConditionGroup($conditionGroup)
@@ -156,7 +176,7 @@ class Evaluator
 
         $condition = $this->initDefinition(
             $this->conditionDefinitions[$condition],
-            $args,
+            $this->resolveArguments($args),
             $negate
         );
 
@@ -279,5 +299,54 @@ class Evaluator
                 $this->defineFromClass($condition);
             }
         }
+    }
+
+    protected function getFromDataSource(string $key)
+    {
+        if (!key_exists($key, $this->datasource)) {
+            return null;
+        }
+
+        return $this->datasource[$key];
+    }
+
+    /**
+     * @param mixed $datasource
+     * @param string $prefix
+     *
+     * @return array
+     */
+    protected function flattenDataSource(array $datasource, $prefix = '') {
+        $flatten = [];
+
+        foreach ($datasource as $key => $value) {
+            $newKey = $prefix === '' ? $key : $prefix . '.' . $key;
+
+            if (is_array($value)) {
+                // If the value is an array, recurse into it
+                $flatten = array_merge($flatten, $this->flattenDataSource($value, $newKey));
+            } else {
+                // Otherwise, set the value in the result array
+                $flatten[$newKey] = $value;
+            }
+        }
+
+        return $flatten;
+    }
+
+    protected function resolveArguments(array $arguments)
+    {
+        return array_map(
+            function ($argument) {
+                if (is_string($argument) && mb_strpos($argument, self::ARGUMENT_RESOLVE_PREFIX_TOKEN) === 0) {
+                    $argument = $this->getFromDataSource(
+                        trim(str_replace(self::ARGUMENT_RESOLVE_PREFIX_TOKEN, "", $argument))
+                    );
+                }
+
+                return $argument;
+            },
+            $arguments
+        );
     }
 }
