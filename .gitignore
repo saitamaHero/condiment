@@ -14,8 +14,7 @@ Thumbs.db
 .env.*
 
 # Ignore PHPUnit and coverage reports
-phpunit.xml
-phpunit.xml.dist
+coverage-report
 coverage.xml
 /build/
 /clover.xml
