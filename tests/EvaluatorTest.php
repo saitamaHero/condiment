@@ -108,6 +108,98 @@ final class EvaluatorTest extends TestCase
     {
         $this->expectException(EvaluatorInvalidConditionException::class);
 
-        $this->evaluator->addCondition('equality', [9,9]);
+        $this->evaluator->addCondition('equality', [9, 9]);
+    }
+
+    public function testEvaluatorCanResolveArgumentFromDataSource()
+    {
+        $product = [
+            'id' => 1,
+            'name' => 'Ultra HD 4K Television',
+            'price' => 799.99,
+            'category' => 'Electronics',
+            'brand' => 'SuperVision',
+            'model' => 'SV-4K2023',
+            'screenSize' => '65 inches',
+            'resolution' => '3840 x 2160',
+            'features' => [
+                'Smart TV',
+                'HDR Support',
+                'Voice Control',
+                'Wi-Fi Enabled',
+                'Multiple HDMI Ports',
+            ],
+            'warranty' => '2 years',
+            'ratings' => [
+                'average' => 4.7,
+                'totalReviews' => 150,
+            ],
+        ];
+
+        $this->evaluator->setDataSource($product)
+            ->addConditions([
+                [
+                    'gt',
+                    [
+                        '@@ratings.totalReviews',
+                        100
+                    ]
+                ],
+                [
+                    'contains',
+                    [
+                        '@@resolution',
+                        '2160'
+                    ]
+                ]
+            ]);
+
+        $this->assertTrue($this->evaluator->evaluate());
+    }
+
+    public function testNoErrorIsReturnIfArgumentIsNotFound()
+    {
+        $product = [
+            'id' => 1,
+            'name' => 'Ultra HD 4K Television',
+            'price' => 799.99,
+            'category' => 'Electronics',
+            'brand' => 'SuperVision',
+            'model' => 'SV-4K2023',
+            'screenSize' => '65 inches',
+            'resolution' => '3840 x 2160',
+            'features' => [
+                'Smart TV',
+                'HDR Support',
+                'Voice Control',
+                'Wi-Fi Enabled',
+                'Multiple HDMI Ports',
+            ],
+            'warranty' => '2 years',
+            'ratings' => [
+                'average' => 4.7,
+                'totalReviews' => 150,
+            ],
+        ];
+
+        $this->evaluator->setDataSource($product)
+            ->addConditions([
+                [
+                    'gt',
+                    [
+                        '@@ratings.missingProperty',
+                        100
+                    ]
+                ],
+                [
+                    'contains',
+                    [
+                        '@@resolution',
+                        '2160'
+                    ]
+                ]
+            ]);
+
+        $this->assertIsBool($this->evaluator->evaluate());
     }
 }
