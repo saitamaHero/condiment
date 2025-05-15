@@ -18,14 +18,14 @@ final class EvaluatorTest extends TestCase
         return [
             'Two conditions are evaluate and returns expected value' => [
                 [
-                    ['equals', [1,1], Evaluator::AND_CONNECTOR, false],
+                    ['equals', [1, 1], Evaluator::AND_CONNECTOR, false],
                     ['contains', ["Hello", "ll"], Evaluator::AND_CONNECTOR, false],
                 ],
                 true
             ],
             'Conditions are grouped correctly' => [
                 [
-                    ['equals', [1,2], Evaluator::AND_CONNECTOR, false],
+                    ['equals', [1, 2], Evaluator::AND_CONNECTOR, false],
                     ['contains', ["Hello", "b"], Evaluator::AND_CONNECTOR, false],
                     ['match', ["condition", "tio(n|nal)"], Evaluator::OR_CONNECTOR, false],
                 ],
@@ -33,7 +33,7 @@ final class EvaluatorTest extends TestCase
             ],
             'Groups are created manually' => [
                 [
-                    ['equals', [1,2], Evaluator::AND_CONNECTOR, false],
+                    ['equals', [1, 2], Evaluator::AND_CONNECTOR, false],
                     'and' => [
                         ['contains', ["Hello", "b"], Evaluator::AND_CONNECTOR, false],
                         ['match', ["condition", "tio(n|nal)"], Evaluator::OR_CONNECTOR, false]
@@ -43,7 +43,7 @@ final class EvaluatorTest extends TestCase
             ],
             'Nested groups can be added manually' => [
                 [
-                    ['equals', [1,2], Evaluator::AND_CONNECTOR, false],
+                    ['equals', [1, 2], Evaluator::AND_CONNECTOR, false],
                     'and' => [
                         ['contains', ["Hello", "b"], Evaluator::AND_CONNECTOR, false],
                         ['match', ["condition", "tio(n|nal)"], Evaluator::OR_CONNECTOR, false],
@@ -57,7 +57,7 @@ final class EvaluatorTest extends TestCase
             ],
             'N groups can be added nested' => [
                 [
-                    ['equals', [1,2], Evaluator::AND_CONNECTOR, false],
+                    ['equals', [1, 2], Evaluator::AND_CONNECTOR, false],
                     'and' => [
                         ['contains', ["Hello", "b"], Evaluator::AND_CONNECTOR, false],
                         ['match', ["condition", "tio(n|nal)"], Evaluator::OR_CONNECTOR, false],
@@ -104,7 +104,7 @@ final class EvaluatorTest extends TestCase
         $this->assertSame($expected, $this->evaluator->evaluate());
     }
 
-    public function testEvaluatorThrowsExceptionForNoExistingCondition ()
+    public function testEvaluatorThrowsExceptionForNoExistingCondition()
     {
         $this->expectException(EvaluatorInvalidConditionException::class);
 
