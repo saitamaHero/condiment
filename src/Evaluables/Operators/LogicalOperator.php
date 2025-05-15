@@ -26,7 +26,7 @@ abstract class LogicalOperator implements Evaluables\Evaluable, Evaluables\Negab
 
     public function setEvaluables(...$evaluables)
     {
-        $this->evaluables = $evaluables;
+        $this->evaluables = array_filter($evaluables, fn ($evaluable) => !empty($evaluable));
 
         $this->updateEvaluablesCount();
     }
