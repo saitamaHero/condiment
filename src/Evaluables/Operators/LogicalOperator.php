@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace Condiment\Evaluables\Operators;
 
@@ -36,11 +36,6 @@ abstract class LogicalOperator implements Evaluables\Evaluable, Evaluables\Negab
         $this->evaluablesCount = count($this->evaluables);
     }
 
-    public function __toString()
-    {
-        return $this->display();
-    }
-
     public static function __callStatic($name, $arguments)
     {
         if ($name === 'create') {
@@ -54,10 +49,5 @@ abstract class LogicalOperator implements Evaluables\Evaluable, Evaluables\Negab
     public function negate(): Negation
     {
         return new Negation($this);
-    }
-
-    public function display(): string
-    {
-        return __CLASS__;
     }
 }
