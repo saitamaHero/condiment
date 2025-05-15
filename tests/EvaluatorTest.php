@@ -68,7 +68,29 @@ final class EvaluatorTest extends TestCase
                     ],
                 ],
                 false
-            ]
+            ],
+            'Deeply nested conditions' => [
+                [
+                    ['equals', [1, 1], Evaluator::AND_CONNECTOR, false],
+                    'and' => [
+                        ['contains', ["Hello", "H"], Evaluator::AND_CONNECTOR, false],
+                        'or' => [
+                            ['match', ["condition", "tio(n|nal)"], Evaluator::OR_CONNECTOR, false],
+                            'and' => [
+                                ['endsWith', ["PHP", "HP"], Evaluator::AND_CONNECTOR, false],
+                                'or' => [
+                                    ['startsWith', ["PHP", "PH"], Evaluator::OR_CONNECTOR, false],
+                                    'and' => [
+                                        ['gt', [10, 5], Evaluator::AND_CONNECTOR, false],
+                                        ['lt', [5, 10], Evaluator::AND_CONNECTOR, false],
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+                true
+            ],
 
         ];
     }
