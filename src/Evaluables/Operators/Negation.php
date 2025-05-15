@@ -2,15 +2,14 @@
 
 namespace Condiment\Evaluables\Operators;
 
-use Condiment\Evaluables;
+use Condiment\Exceptions\InvalidEvaluableArgumentCountException;
 
 final class Negation extends LogicalOperator
 {
     public function evaluate(): bool
     {
         if ($this->evaluablesCount !== 1) {
-            //TODO needs to throw an Exception
-            throw new \Exception("Error you modofoca");
+            throw new InvalidEvaluableArgumentCountException(1, $this->evaluablesCount);
         }
 
         return !current($this->evaluables)->evaluate();
