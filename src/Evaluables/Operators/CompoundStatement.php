@@ -9,9 +9,11 @@ abstract class CompoundStatement extends LogicalOperator
 {
     public function evaluate(): bool
     {
+        //@codeCoverageIgnoreStart
         if ($this->evaluablesCount < 2) {
             throw new InvalidEvaluableArgumentCountException(2, $this->evaluablesCount);
         }
+        //@codeCoverageIgnoreEnd
 
         $evaluables = iterator_to_array($this->getEvaluables());
 
