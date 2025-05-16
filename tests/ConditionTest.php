@@ -39,7 +39,7 @@ final class ConditionTest extends TestCase
 
     public function testConditionCannotBeEvaluatedWithoutArguments()
     {
-        $this->expectException(Condiment\Exceptions\NoArgumentsException::class);
+        $this->expectException(\Condiment\Exceptions\NoArgumentsException::class);
 
         $condition = new Equals();
         $condition->evaluate();
