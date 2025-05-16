@@ -11,23 +11,15 @@ class FluentEvaluator extends Evaluator
 {
     public function __call($name, $arguments)
     {
-        //TODO maybe I should evaluate that any condition added to this method to
-        // enforce the conditions, but the condition itself handles the error
         $tokens = $this->getTokens($name);
 
-        if (
-            ! method_exists($this, $tokens['condition'])
-            && $this->conditionExists($tokens['condition'])
-        ) {
+        if (! method_exists($this, $tokens['condition'])) {
             $this->addCondition(
                 $tokens['condition'],
                 $arguments,
                 $tokens['connector'],
                 $tokens['negation']
             );
-
-        } else {
-            throw new \Exception("Illegal Method \"$name\" on " . static::class);
         }
 
         return $this;
