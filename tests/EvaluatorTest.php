@@ -93,6 +93,14 @@ final class EvaluatorTest extends TestCase
                 ],
                 true
             ],
+            'Negated condition returns true' => [
+                [
+                    [
+                        ['equals', [1, 2], Evaluator::AND_CONNECTOR, true],
+                    ],
+                ],
+                true
+            ],
 
         ];
     }
@@ -204,4 +212,20 @@ final class EvaluatorTest extends TestCase
 
         $this->assertIsBool($this->evaluator->evaluate());
     }
+
+    public function testEvaluatorReturnsFalseWithNoConditionsAdded()
+    {
+        $this->assertFalse($this->evaluator->evaluate());
+    }
+
+    public function testConditionCanBeDefinedFromClass()
+    {
+        $evaluator = new Evaluator();
+
+        $evaluator->defineFromClass(\Tests\Conditions\Magic::class);
+
+        $this->assertArrayHasKey(\Tests\Conditions\Magic::getRegisterName(), $evaluator->getDefinedConditions());
+    }
+
+
 }
