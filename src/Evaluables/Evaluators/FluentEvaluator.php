@@ -13,16 +13,12 @@ class FluentEvaluator extends Evaluator
     {
         $tokens = $this->getTokens($name);
 
-        if (! method_exists($this, $tokens['condition'])) {
-            $this->addCondition(
-                $tokens['condition'],
-                $arguments,
-                $tokens['connector'],
-                $tokens['negation']
-            );
-        }
-
-        return $this;
+        return  $this->addCondition(
+            $tokens['condition'],
+            $arguments,
+            $tokens['connector'],
+            $tokens['negation']
+        );;
     }
 
     /**
