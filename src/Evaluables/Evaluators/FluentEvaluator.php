@@ -77,4 +77,24 @@ class FluentEvaluator extends Evaluator
 
         return $tokens;
     }
+
+    /**
+     * @param \Closure $closure
+     *
+     * @return $this
+     */
+    public function group(\Closure $closure)
+    {
+        return $this->_group($closure, self::AND_CONNECTOR);
+    }
+
+    /**
+     * @param \Closure $closure
+     *
+     * @return $this
+     */
+    public function orGroup(\Closure $closure) //TODO maybe this can be part of fluent evaluator
+    {
+        return $this->_group($closure, self::OR_CONNECTOR);
+    }
 }

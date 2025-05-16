@@ -185,26 +185,6 @@ class Evaluator
         return $this;
     }
 
-    /**
-     * @param \Closure $closure
-     *
-     * @return $this
-     */
-    public function group(\Closure $closure)
-    {
-        return $this->_group($closure, self::AND_CONNECTOR);
-    }
-
-    /**
-     * @param callable $closure
-     *
-     * @return $this
-     */
-    public function orGroup(\Closure $closure) //TODO maybe this can be part of fluent evaluator
-    {
-        return $this->_group($closure, self::OR_CONNECTOR);
-    }
-
     public function addGroup(array $conditions, string $connector = self::AND_CONNECTOR, $negate = false)
     {
         return $this->_group(function ($evaluator) use ($conditions) {
