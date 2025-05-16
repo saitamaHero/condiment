@@ -29,18 +29,4 @@ abstract class ConditionDefinition extends Condition
     {
         return \lcfirst(\basename(\str_replace("\\", "/", static::class)));
     }
-
-    public function __toString()
-    {
-        $result = $this->evaluate();
-
-        $color = $result ? "#8ac926" : "#ba181b";
-
-        return sprintf(
-            "%s(%s) <span style=\"display: inline-block; width: .5rem; height: .5rem;  border: 1px solid #000; border-radius: 50%%; background: $color; \"></span>",
-            static::getRegisterName(),
-            join(", ", $this->arguments),
-            // $result ? "true" : "false"
-        );
-    }
 }
