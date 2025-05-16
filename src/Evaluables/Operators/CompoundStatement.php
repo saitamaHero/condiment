@@ -27,11 +27,5 @@ abstract class CompoundStatement extends LogicalOperator
             $this->compare($evaluable->evaluate(), fn() => $this->runEvaluate($nextEvaluable, $evaluables));
     }
 
-
-    public function addEvaluables(Evaluables\Evaluable ...$evaluable)
-    {
-        $this->evaluables = array_merge($this->evaluables, $evaluable);
-    }
-
     protected abstract function compare(bool $a, \Closure $next): bool;
 }
