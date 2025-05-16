@@ -1,5 +1,7 @@
 <?php
 
+namespace Tests;
+
 use Condiment\Evaluables\Evaluators\Evaluator;
 use Condiment\Exceptions\EvaluatorInvalidConditionException;
 use PHPUnit\Framework\TestCase;

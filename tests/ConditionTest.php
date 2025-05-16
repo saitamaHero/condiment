@@ -1,5 +1,7 @@
 <?php
 
+namespace Tests;
+
 use Condiment\Evaluables\Conditions\Definitions\EndsWith;
 use Condiment\Evaluables\Conditions\Definitions\Equals;
 use Condiment\Evaluables\Conditions\Definitions\StartsWith;
