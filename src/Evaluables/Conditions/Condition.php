@@ -49,7 +49,7 @@ abstract class Condition implements Evaluable, Negable
      */
     public function getArgument(int $index)
     {
-        if ($index > count($this->arguments) || $index < 0) {
+        if ($index > count($this->arguments) - 1 || $index < 0) {
             throw new \OutOfRangeException("$index is not a valid argument index");
         }
 
