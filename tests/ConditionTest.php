@@ -80,5 +80,25 @@ final class ConditionTest extends TestCase
         ];
     }
 
+    /**
+     * @dataProvider outOfRangeProvider
+     */
+    public function testExceptionIsThrownForOutOfRangeArguments(array $args, int $index)
+    {
+        $this->expectException(\OutOfRangeException::class);
+        $equals = new Equals();
+        $equals->args($args);
+        $equals->getArgument($index);
+    }
+
+    public static function outOfRangeProvider()
+    {
+        return [
+            'index too high' => [[1,2], 2],
+            'negative index' => [[1,2],-1],
+            'no arguments' => [[], 0]
+        ];
+    }
+
 }
 
