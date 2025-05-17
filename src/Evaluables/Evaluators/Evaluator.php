@@ -97,6 +97,11 @@ class Evaluator
         return $this->groupConditions($this->evaluables, $this->connectors);
     }
 
+    public function getEvaluables()
+    {
+        return $this->evaluables;
+    }
+
     public function evaluate(bool $reset = true): bool
     {
 
