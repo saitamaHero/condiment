@@ -16,6 +16,10 @@ class Evaluator
 
     const NOT_CONNECTOR = 'not';
 
+    const TYPE_CONDITION = 'condition';
+
+    const TYPE_GROUP = 'group';
+
     /**
      * Prefix for identify which argument should be pull
      * from the datasource
@@ -192,33 +196,40 @@ class Evaluator
 
     public function addGroup(array $conditions, string $connector = self::AND_CONNECTOR, $negate = false)
     {
-        return $this->_group(function ($evaluator) use ($conditions) {
-            foreach ($conditions as $key => $condition) {
-                if (!is_array($condition[0])) {
-                    $evaluator->addCondition(...$condition);
-                }else {
-                  $evaluator->addGroup($condition, (string)$key);
-                }
-
-            }
-        }, $connector, $negate);
+        return $this->_group(
+            fn($evaluator) => $evaluator->addConditions($conditions),
+            $connector,
+            $negate
+        );
     }
 
     public function addConditions(array $conditions)
     {
         foreach ($conditions as $key => $condition) {
 
-            if (!is_array($condition[0])) {
-                $this->addCondition(...$condition);
-            }else {
+            $conditionType = $condition['type'] ?? null;
 
-                $groupConnector = Evaluator::AND_CONNECTOR;
+            if ($conditionType === self::TYPE_CONDITION) {
+                $condition = array_merge($this->getConditionDefaults(), $condition);
 
-                if (is_string($key) && in_array($key, [Evaluator::AND_CONNECTOR, Evaluator::OR_CONNECTOR])) {
-                    $groupConnector = \strtolower($key);
+                $this->addCondition(
+                    $condition['condition'],
+                    $condition['args'],
+                    $condition['connector'],
+                    $condition['negate']
+                );
+            } else if ($conditionType == self::TYPE_GROUP) {
+                $conditionGroup = array_merge($this->getGroupDefaults(), $condition);
+
+                if (count($conditionGroup['conditions']) > 0) {
+                    $this->addGroup(
+                        $conditionGroup['conditions'],
+                        $conditionGroup['connector'],
+                        $conditionGroup['negate']
+                    );
                 }
-
-                $this->addGroup($condition, $groupConnector);
+            } else {
+                //TODO maybe throw an exception
             }
         }
     }
@@ -333,5 +344,24 @@ class Evaluator
             },
             $arguments
         );
+    }
+
+    protected function getConditionDefaults(): array
+    {
+        return [
+            'condition' => null,
+            'args' => [],
+            'connector' => self::AND_CONNECTOR,
+            'negate' => false
+        ];
+    }
+
+    protected function getGroupDefaults(): array
+    {
+        return [
+            'conditions' => [],
+            'connector' => self::AND_CONNECTOR,
+            'negate' => false
+        ];
     }
 }
