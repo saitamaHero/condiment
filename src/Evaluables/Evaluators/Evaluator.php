@@ -291,7 +291,7 @@ class Evaluator
             # string keys might indicate that is the name/alias of the condition
             if (is_string($key)) {
                 $this->defineCondition($key, $condition);
-            }else {
+            } else {
                 $this->defineFromClass($condition);
             }
         }
@@ -312,7 +312,8 @@ class Evaluator
      *
      * @return array
      */
-    protected function flattenDataSource(array $datasource, $prefix = '') {
+    protected function flattenDataSource(array $datasource, $prefix = '')
+    {
         $flatten = [];
 
         foreach ($datasource as $key => $value) {
