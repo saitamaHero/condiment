@@ -20,88 +20,291 @@ final class EvaluatorTest extends TestCase
         return [
             'Two conditions are evaluate and returns expected value' => [
                 [
-                    ['equals', [1, 1], Evaluator::AND_CONNECTOR, false],
-                    ['contains', ["Hello", "ll"], Evaluator::AND_CONNECTOR, false],
+                    [
+                        'type' => 'condition',
+                        'condition' => 'equals',
+                        'args' => [1, 1],
+                        'connector' => Evaluator::AND_CONNECTOR,
+                        'negate' => false
+                    ],
+                    [
+                        'type' => 'condition',
+                        'condition' => 'contains',
+                        'args' => ["Hello", "ll"],
+                        'connector' => Evaluator::AND_CONNECTOR,
+                        'negate' => false
+                    ],
                 ],
                 true
             ],
             'Conditions are grouped correctly' => [
                 [
-                    ['equals', [1, 2], Evaluator::AND_CONNECTOR, false],
-                    ['contains', ["Hello", "b"], Evaluator::AND_CONNECTOR, false],
-                    ['match', ["condition", "tio(n|nal)"], Evaluator::OR_CONNECTOR, false],
+                    [
+                        'type' => 'condition',
+                        'condition' => 'equals',
+                        'args' => [1, 2],
+                        'connector' => Evaluator::AND_CONNECTOR,
+                        'negate' => false
+                    ],
+                    [
+                        'type' => 'condition',
+                        'condition' => 'contains',
+                        'args' => ["Hello", "b"],
+                        'connector' => Evaluator::AND_CONNECTOR,
+                        'negate' => false
+                    ],
+                    [
+                        'type' => 'condition',
+                        'condition' => 'match',
+                        'args' => ["condition", "tio(n|nal)"],
+                        'connector' => Evaluator::OR_CONNECTOR,
+                        'negate' => false
+                    ],
                 ],
                 true
             ],
             'Groups are created manually' => [
                 [
-                    ['equals', [1, 2], Evaluator::AND_CONNECTOR, false],
-                    'and' => [
-                        ['contains', ["Hello", "b"], Evaluator::AND_CONNECTOR, false],
-                        ['match', ["condition", "tio(n|nal)"], Evaluator::OR_CONNECTOR, false]
+                    [
+                        'type' => 'condition',
+                        'condition' => 'equals',
+                        'args' => [1, 2],
+                        'connector' => Evaluator::AND_CONNECTOR,
+                        'negate' => false
+                    ],
+                    [
+                        'type' => 'group',
+                        'conditions' => [
+                            [
+                                'type' => 'condition',
+                                'condition' => 'contains',
+                                'args' => ["Hello", "b"],
+                                'connector' => Evaluator::AND_CONNECTOR,
+                                'negate' => false
+                            ],
+                            [
+                                'type' => 'condition',
+                                'condition' => 'match',
+                                'args' => ["condition", "tio(n|nal)"],
+                                'connector' => Evaluator::OR_CONNECTOR,
+                                'negate' => false
+                            ]
+                        ],
+                        'connector' => Evaluator::AND_CONNECTOR,
+                        'negate' => false
                     ],
                 ],
                 false
             ],
             'Nested groups can be added manually' => [
                 [
-                    ['equals', [1, 2], Evaluator::AND_CONNECTOR, false],
-                    'and' => [
-                        ['contains', ["Hello", "b"], Evaluator::AND_CONNECTOR, false],
-                        ['match', ["condition", "tio(n|nal)"], Evaluator::OR_CONNECTOR, false],
-                        'or' => [
-                            ['endsWith', ["PHP", "HP"], Evaluator::AND_CONNECTOR, false],
-                            ['startsWith', ["PHP", "PH"], Evaluator::OR_CONNECTOR, false],
-                        ]
+                    [
+                        'type' => 'condition',
+                        'condition' => 'equals',
+                        'args' => [1, 2],
+                        'connector' => Evaluator::AND_CONNECTOR,
+                        'negate' => false
+                    ],
+                    [
+                        'type' => 'group',
+                        'conditions' => [
+                            [
+                                'type' => 'condition',
+                                'condition' => 'contains',
+                                'args' => ["Hello", "b"],
+                                'connector' => Evaluator::AND_CONNECTOR,
+                                'negate' => false
+                            ],
+                            [
+                                'type' => 'condition',
+                                'condition' => 'match',
+                                'args' => ["condition", "tio(n|nal)"],
+                                'connector' => Evaluator::OR_CONNECTOR,
+                                'negate' => false
+                            ],
+                            [
+                                'type' => 'group',
+                                'conditions' => [
+                                    [
+                                        'type' => 'condition',
+                                        'condition' => 'endsWith',
+                                        'args' => ["PHP", "HP"],
+                                        'connector' => Evaluator::AND_CONNECTOR,
+                                        'negate' => false
+                                    ],
+                                    [
+                                        'type' => 'condition',
+                                        'condition' => 'startsWith',
+                                        'args' => ["PHP", "PH"],
+                                        'connector' => Evaluator::OR_CONNECTOR,
+                                        'negate' => false
+                                    ]
+                                ],
+                                'connector' => Evaluator::OR_CONNECTOR,
+                                'negate' => false
+                            ]
+                        ],
+                        'connector' => Evaluator::AND_CONNECTOR,
+                        'negate' => false
                     ],
                 ],
                 false
             ],
             'N groups can be added nested' => [
                 [
-                    ['equals', [1, 2], Evaluator::AND_CONNECTOR, false],
-                    'and' => [
-                        ['contains', ["Hello", "b"], Evaluator::AND_CONNECTOR, false],
-                        ['match', ["condition", "tio(n|nal)"], Evaluator::OR_CONNECTOR, false],
-                        'or' => [
-                            ['endsWith', ["PHP", "HP"], Evaluator::AND_CONNECTOR, false],
-                            ['startsWith', ["PHP", "PH"], Evaluator::OR_CONNECTOR, false],
-                        ]
+                    [
+                        'type' => 'condition',
+                        'condition' => 'equals',
+                        'args' => [1, 2],
+                        'connector' => Evaluator::AND_CONNECTOR,
+                        'negate' => false
+                    ],
+                    [
+                        'type' => 'group',
+                        'conditions' => [
+                            [
+                                'type' => 'condition',
+                                'condition' => 'contains',
+                                'args' => ["Hello", "b"],
+                                'connector' => Evaluator::AND_CONNECTOR,
+                                'negate' => false
+                            ],
+                            [
+                                'type' => 'condition',
+                                'condition' => 'match',
+                                'args' => ["condition", "tio(n|nal)"],
+                                'connector' => Evaluator::OR_CONNECTOR,
+                                'negate' => false
+                            ],
+                            [
+                                'type' => 'group',
+                                'conditions' => [
+                                    [
+                                        'type' => 'condition',
+                                        'condition' => 'endsWith',
+                                        'args' => ["PHP", "HP"],
+                                        'connector' => Evaluator::AND_CONNECTOR,
+                                        'negate' => false
+                                    ],
+                                    [
+                                        'type' => 'condition',
+                                        'condition' => 'startsWith',
+                                        'args' => ["PHP", "PH"],
+                                        'connector' => Evaluator::OR_CONNECTOR,
+                                        'negate' => false
+                                    ]
+                                ],
+                                'connector' => Evaluator::OR_CONNECTOR,
+                                'negate' => false
+                            ]
+                        ],
+                        'connector' => Evaluator::AND_CONNECTOR,
+                        'negate' => false
                     ],
                 ],
                 false
             ],
             'Deeply nested conditions' => [
                 [
-                    ['equals', [1, 1], Evaluator::AND_CONNECTOR, false],
-                    'and' => [
-                        ['contains', ["Hello", "H"], Evaluator::AND_CONNECTOR, false],
-                        'or' => [
-                            ['match', ["condition", "tio(n|nal)"], Evaluator::OR_CONNECTOR, false],
-                            'and' => [
-                                ['endsWith', ["PHP", "HP"], Evaluator::AND_CONNECTOR, false],
-                                'or' => [
-                                    ['startsWith', ["PHP", "PH"], Evaluator::OR_CONNECTOR, false],
-                                    'and' => [
-                                        ['gt', [10, 5], Evaluator::AND_CONNECTOR, false],
-                                        ['lt', [5, 10], Evaluator::AND_CONNECTOR, false],
-                                    ],
-                                ],
-                            ],
-                        ],
+                    [
+                        'type' => 'condition',
+                        'condition' => 'equals',
+                        'args' => [1, 1],
+                        'connector' => Evaluator::AND_CONNECTOR,
+                        'negate' => false
                     ],
+                    [
+                        'type' => 'group',
+                        'conditions' => [
+                            [
+                                'type' => 'condition',
+                                'condition' => 'contains',
+                                'args' => ["Hello", "H"],
+                                'connector' => Evaluator::AND_CONNECTOR,
+                                'negate' => false
+                            ],
+                            [
+                                'type' => 'group',
+                                'conditions' => [
+                                    [
+                                        'type' => 'condition',
+                                        'condition' => 'match',
+                                        'args' => ["condition", "tio(n|nal)"],
+                                        'connector' => Evaluator::OR_CONNECTOR,
+                                        'negate' => false
+                                    ],
+                                    [
+                                        'type' => 'group',
+                                        'conditions' => [
+                                            [
+                                                'type' => 'condition',
+                                                'condition' => 'endsWith',
+                                                'args' => ["PHP", "HP"],
+                                                'connector' => Evaluator::AND_CONNECTOR,
+                                                'negate' => false
+                                            ],
+                                            [
+                                                'type' => 'group',
+                                                'conditions' => [
+                                                    [
+                                                        'type' => 'condition',
+                                                        'condition' => 'startsWith',
+                                                        'args' => ["PHP", "PH"],
+                                                        'connector' => Evaluator::OR_CONNECTOR,
+                                                        'negate' => false
+                                                    ],
+                                                    [
+                                                        'type' => 'group',
+                                                        'conditions' => [
+                                                            [
+                                                                'type' => 'condition',
+                                                                'condition' => 'gt',
+                                                                'args' => [10, 5],
+                                                                'connector' => Evaluator::AND_CONNECTOR,
+                                                                'negate' => false
+                                                            ],
+                                                            [
+                                                                'type' => 'condition',
+                                                                'condition' => 'lt',
+                                                                'args' => [5, 10],
+                                                                'connector' => Evaluator::AND_CONNECTOR,
+                                                                'negate' => false
+                                                            ]
+                                                        ],
+                                                        'connector' => Evaluator::AND_CONNECTOR,
+                                                        'negate' => false
+                                                    ]
+                                                ],
+                                                'connector' => Evaluator::OR_CONNECTOR,
+                                                'negate' => false
+                                            ]
+                                        ],
+                                        'connector' => Evaluator::AND_CONNECTOR,
+                                        'negate' => false
+                                    ]
+                                ],
+                                'connector' => Evaluator::OR_CONNECTOR,
+                                'negate' => false
+                            ]
+                        ],
+                        'connector' => Evaluator::AND_CONNECTOR,
+                        'negate' => false
+                    ]
                 ],
                 true
             ],
             'Negated condition returns true' => [
                 [
                     [
-                        ['equals', [1, 2], Evaluator::AND_CONNECTOR, true],
-                    ],
+                        'type' => 'condition',
+                        'condition' => 'equals',
+                        'args' => [1, 2],
+                        'connector' => Evaluator::AND_CONNECTOR,
+                        'negate' => true
+                    ]
                 ],
                 true
             ],
-
         ];
     }
 
@@ -149,18 +352,24 @@ final class EvaluatorTest extends TestCase
         $this->evaluator->setDataSource($product)
             ->addConditions([
                 [
-                    'gt',
-                    [
+                    'type' => 'condition',
+                    'condition' => 'gt',
+                    'args' => [
                         '@@ratings.totalReviews',
                         100
-                    ]
+                    ],
+                    'connector' => Evaluator::AND_CONNECTOR,
+                    'negate' => false
                 ],
                 [
-                    'contains',
-                    [
+                    'type' => 'condition',
+                    'condition' => 'contains',
+                    'args' => [
                         '@@resolution',
                         '2160'
-                    ]
+                    ],
+                    'connector' => Evaluator::AND_CONNECTOR,
+                    'negate' => false
                 ]
             ]);
 
@@ -195,18 +404,24 @@ final class EvaluatorTest extends TestCase
         $this->evaluator->setDataSource($product)
             ->addConditions([
                 [
-                    'gt',
-                    [
+                    'type' => 'condition',
+                    'condition' => 'gt',
+                    'args' => [
                         '@@ratings.missingProperty',
                         100
-                    ]
+                    ],
+                    'connector' => Evaluator::AND_CONNECTOR,
+                    'negate' => false
                 ],
                 [
-                    'contains',
-                    [
+                    'type' => 'condition',
+                    'condition' => 'contains',
+                    'args' => [
                         '@@resolution',
                         '2160'
-                    ]
+                    ],
+                    'connector' => Evaluator::AND_CONNECTOR,
+                    'negate' => false
                 ]
             ]);
 
